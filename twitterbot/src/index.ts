@@ -1,4 +1,5 @@
 require('dotenv').config(); // tslint:disable-line no-var-requires
+import cron from 'node-cron';
 import { createFrame } from "./ffmpeg";
 import { uploadFile, updateTweetWithMedia } from './twitter';
 import { base64Encode } from './files';
@@ -23,4 +24,4 @@ const tweet = () => {
   });
 }
 
-tweet();
+cron.schedule('*/30 * * * *', tweet);
