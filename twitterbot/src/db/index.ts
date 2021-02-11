@@ -7,14 +7,15 @@ export const openDB = (): Promise<any> => new Promise((resolve, reject) => {
   })
 });
 
-export const countPosts = (): Promise<number> => { openDB().then((db) => 
+export const countPosts = (): Promise<number> => openDB().then((db) => 
+  { 
   db.get('SELECT COUNT(*) FROM post', [], (err: any, res: any) => {
-    db.close();
     console.log({err, res});
+    db.close();
     if (err) return Promise.reject(err);
-    return Promise.resolve(res['COUNT(*)']);
-    }));
-    }
+    return Promise.resolve(res['COUNT(*)'] as number);
+    })}); 
+    
 
 export const savePost = ({ id_str }: { id_str: string }): Promise<void> => openDB().then((db) =>
   db.run(
