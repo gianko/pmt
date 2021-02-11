@@ -1,18 +1,20 @@
 const sqlite3 = require('sqlite3').verbose();
 
 export const openDB = (): Promise<any> => new Promise((resolve, reject) => {
-  const db = new sqlite3.Datebase('../papitadb', (err: any) => {
+  const db = new sqlite3.Database('../papitadb', (err: any) => {
     if (err) return reject(err);
     return resolve(db);
   })
 });
 
-export const countPosts = (): Promise<number> => openDB().then((db) =>
+export const countPosts = (): Promise<number> => { openDB().then((db) => 
   db.get('SELECT COUNT(*) FROM post', [], (err: any, res: any) => {
     db.close();
+    console.log({err, res});
     if (err) return Promise.reject(err);
     return Promise.resolve(res['COUNT(*)']);
-  }));
+    }));
+    }
 
 export const savePost = ({ id_str }: { id_str: string }): Promise<void> => openDB().then((db) =>
   db.run(
@@ -24,9 +26,13 @@ export const savePost = ({ id_str }: { id_str: string }): Promise<void> => openD
       return Promise.resolve();
     }));
 
-export const handleError = (error: string): Promise<void> => openDB().then((db) => db.run(
-  'INSERT INTO error () VALUES ()',
-  {},
+export const handleError = (error: string, index: number = 0): Promise<void> => openDB().then((db) => db.run(
+  'INSERT INTO error (timestamp, index_number, error) VALUES ($date, $index, $error)',
+  {
+    $date: Date.now(),
+    $error: error,
+    $index: index,
+  },
   (err: any) => {
     db.close();
     // tslint:disable-next-line no-console

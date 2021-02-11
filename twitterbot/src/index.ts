@@ -9,6 +9,7 @@ import { frameFromIndex } from "./utils";
 const tweet = () => {
   countPosts().then((index) => {
     const frame = frameFromIndex(index);
+    console.log({index, frame});
     const updateStatus = ({ media_id_string }: { media_id_string: string }) => updateTweetWithMedia(`cuadro ${frame + 1} de ${MOVIE_FRAMES + 1}`, media_id_string);
 
     return createFrame(index)
